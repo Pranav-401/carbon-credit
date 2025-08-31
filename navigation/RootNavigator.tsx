@@ -1,22 +1,32 @@
 // navigation/RootNavigator.tsx
-import React, { useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthNavigator from './AuthNavigator';
 import NGONavigator from './NGONav';
+import { Dispatch, SetStateAction } from 'react';
 import CommunityNavigator from './CommunityNav';
 import PanchayatNavigator from './PanchayatNav';
 import NCCCNavigator from './NCCCNav';
 
-const Stack = createStackNavigator();
+type RootStackParamList = {
+  Auth: undefined;
+  NGO: undefined;
+  Community: undefined;
+  Panchayat: undefined;
+  NCCC: undefined;
+};
 
-type UserRole = 'NGO' | 'Community' | 'Panchayat' | 'NCCC';
-
-export default function RootNavigator() {
-  const [userRole, setUserRole] = useState<UserRole | null>(null);
-
+const Stack = createNativeStackNavigator<RootStackParamList>();
+export default function RootNavigator({
+  userRole,
+  setUserRole,
+}: {
+  userRole: 'NGO' | 'Community' | 'Panchayat' | 'NCCC' | null;
+  setUserRole: Dispatch<SetStateAction<'NGO' | 'Community' | 'Panchayat' | 'NCCC' | null>>;
+}) {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!userRole ? (
+      {userRole === null ? (
         <Stack.Screen name="Auth">
           {(props) => <AuthNavigator {...props} setUserRole={setUserRole} />}
         </Stack.Screen>

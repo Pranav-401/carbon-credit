@@ -1,12 +1,35 @@
-// screens/Auth/LoginScreen.tsx
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  ImageBackground,
+  Image,
+  Animated,
+  Dimensions,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { LoginScreenProps } from '../../navigation/AuthNavigator';
 
-export default function LoginScreen({ route, setUserRole }: LoginScreenProps) {
+const { width } = Dimensions.get('window');
+
+export default function LoginScreen({ route, navigation, setUserRole }: LoginScreenProps) {
   const { role } = route.params;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const fakeUsers = {
     NGO: { email: 'ngo@test.com', password: '1234' },
@@ -15,37 +38,85 @@ export default function LoginScreen({ route, setUserRole }: LoginScreenProps) {
     NCCC: { email: 'nccc@test.com', password: '1234' },
   };
 
+  const handleLogin = () => {
+    const validUser = fakeUsers[role];
+    if (email === validUser.email && password === validUser.password) {
+      setUserRole(role);
+    } else {
+      Alert.alert('Invalid Credentials', 'Try again!');
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{role} Login</Text>
+    <ImageBackground source={require('../../assets/background.png')} style={styles.background}>
+      <View style={styles.overlay}>
+        <View style={styles.imageContainer}>
+          <Image source={require('../../assets/logo-white.png')} style={styles.logo} />
+          <Text style={styles.title}>{role} Login</Text>
+        </View>
 
-      <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#ccc"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#ccc"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        <Animated.View style={{ opacity: fadeAnim }}>
+          <TouchableOpacity onPress={handleLogin} style={styles.card} activeOpacity={0.8}>
+            <LinearGradient
+              colors={['#4facfe', '#43e97b']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.button}>
+              <Text style={styles.cardText}>Login</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </Animated.View>
 
-      <Button
-        title="Login"
-        onPress={() => {
-          const validUser = fakeUsers[role];
-          if (email === validUser.email && password === validUser.password) {
-            setUserRole(role);
-          } else {
-            Alert.alert('Invalid Credentials', 'Try again!');
-          }
-        }}
-      />
-    </View>
+        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen', { role })}>
+          <Text style={styles.registerText}>
+            Don’t have an account? <Text style={styles.registerLink}>Register</Text>
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, marginBottom: 12, borderRadius: 8 },
+  background: { flex: 1, resizeMode: 'cover', justifyContent: 'center' },
+  overlay: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: 'rgba(0,0,0,0.4)' },
+  imageContainer: { justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  logo: { width: 180, height: 180, resizeMode: 'contain', marginBottom: 10 },
+  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20, color: '#fff' },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: '#fff',
+  },
+  card: {
+    width: '80%',
+    marginVertical: 10,
+    borderRadius: 30,
+    overflow: 'hidden',
+    alignSelf: 'center',
+  },
+  button: { padding: 15, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
+  cardText: { color: '#fff', fontSize: 18, textAlign: 'center', fontWeight: '600' },
+  registerText: { marginTop: 20, textAlign: 'center', color: '#fff' },
+  registerLink: { color: '#4facfe', fontWeight: 'bold' },
 });

@@ -6,17 +6,18 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import { RouteProp } from '@react-navigation/native';
 
+const Stack = createStackNavigator<AuthStackParamList>();
+
 export type AuthStackParamList = {
   LoginSelection: undefined;
   Login: { role: 'NGO' | 'Community' | 'Panchayat' | 'NCCC' };
-  Register: undefined;
+  RegisterScreen: undefined;
 };
-
-const Stack = createStackNavigator<AuthStackParamList>();
 
 export type LoginScreenProps = {
   route: RouteProp<AuthStackParamList, 'Login'>;
   setUserRole: (role: 'NGO' | 'Community' | 'Panchayat' | 'NCCC') => void;
+  navigation: any;
 };
 
 export default function AuthNavigator({
@@ -30,7 +31,7 @@ export default function AuthNavigator({
       <Stack.Screen name="Login">
         {(props) => <LoginScreen {...props} setUserRole={setUserRole} />}
       </Stack.Screen>
-      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
     </Stack.Navigator>
   );
 }
