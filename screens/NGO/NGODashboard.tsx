@@ -140,7 +140,7 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
         </View>
       </View>
 
-    
+
       {/* Recent Activity */}
       <View style={styles.sectionCard}>
         <Text style={styles.sectionTitle}>Recent Activity</Text>
@@ -158,8 +158,16 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
       {/* Quick Actions */}
       <View style={styles.sectionCard}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <ActionButton title="Upload Plantation Report" onPress={() => navigation?.navigate?.("UploadReport")} />
-        <ActionButton title="View Submitted Reports" onPress={() => navigation?.navigate?.("ViewReports")} />
+        <ActionButton
+          title="Upload Plantation Report"
+          onPress={() => navigation.navigate("UploadReport", { userRole: "NGO" })}
+        />
+
+        <ActionButton
+          title="View Submitted Reports"
+          onPress={() => navigation.navigate("ViewReports", { role: "ngo" })}
+        />
+
         <ActionButton title="Track Carbon Credits" onPress={() => navigation?.navigate?.("CarbonCredits")} />
       </View>
     </ScrollView>
