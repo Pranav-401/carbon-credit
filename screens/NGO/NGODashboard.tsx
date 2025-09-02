@@ -1,17 +1,18 @@
-"use client"
+'use client';
 
-import { useEffect, useRef } from "react"
-import { View, Text, StyleSheet, Pressable, ScrollView, Animated, Easing } from "react-native"
+import { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Pressable, ScrollView, Animated, Easing } from 'react-native';
 
 type NGODashboardProps = {
-  navigation: any
-}
+  navigation: any;
+};
 
-export default function NGODashboard({ navigation }: NGODashboardProps) {
-  const headerOpacity = useRef(new Animated.Value(0)).current
-  const headerTranslate = useRef(new Animated.Value(12)).current
-  const cardOpacities = useRef([0, 1, 2, 3].map(() => new Animated.Value(0))).current
-  const cardScales = useRef([0, 1, 2, 3].map(() => new Animated.Value(0.96))).current
+export default function NGODashboard({ route, navigation }: { route: any; navigation: any }) {
+  const headerOpacity = useRef(new Animated.Value(0)).current;
+  const headerTranslate = useRef(new Animated.Value(12)).current;
+  const cardOpacities = useRef([0, 1, 2, 3].map(() => new Animated.Value(0))).current;
+  const cardScales = useRef([0, 1, 2, 3].map(() => new Animated.Value(0.96))).current;
+  const { userRole } = route.params || { userRole: 'NGO' };
 
   useEffect(() => {
     Animated.parallel([
@@ -43,28 +44,28 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
             stiffness: 140,
             useNativeDriver: true,
           }),
-        ]),
-      )
-      Animated.stagger(80, anims).start()
-    })
-  }, [headerOpacity, headerTranslate, cardOpacities, cardScales])
+        ])
+      );
+      Animated.stagger(80, anims).start();
+    });
+  }, [headerOpacity, headerTranslate, cardOpacities, cardScales]);
 
   const statsTop = [
-    { label: "Carbon Credits", value: "120" },
-    { label: "Trees Planted", value: "5,400" },
-  ]
+    { label: 'Carbon Credits', value: '120' },
+    { label: 'Trees Planted', value: '5,400' },
+  ];
   const statsBottom = [
-    { label: "Hectares Restored", value: "32" },
-    { label: "Reports Pending", value: "5" },
-  ]
+    { label: 'Hectares Restored', value: '32' },
+    { label: 'Reports Pending', value: '5' },
+  ];
 
-  const achievements = ["Community Steward", "Top Planter", "Verified Reporter"]
+  const achievements = ['Community Steward', 'Top Planter', 'Verified Reporter'];
 
   const recent = [
-    { title: "Submitted plantation report for Taluka East", time: "2h ago" },
-    { title: "Updated survival rate data (Block 7)", time: "Yesterday" },
-    { title: "Approved community volunteer batch", time: "2 days ago" },
-  ]
+    { title: 'Submitted plantation report for Taluka East', time: '2h ago' },
+    { title: 'Updated survival rate data (Block 7)', time: 'Yesterday' },
+    { title: 'Approved community volunteer batch', time: '2 days ago' },
+  ];
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -74,8 +75,7 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
           opacity: headerOpacity,
           transform: [{ translateY: headerTranslate }],
           marginBottom: 12,
-        }}
-      >
+        }}>
         <Text style={styles.title}>NGO Dashboard</Text>
         <Text style={styles.subtitle}>Welcome back. Here’s your project overview</Text>
       </Animated.View>
@@ -91,8 +91,7 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
                 opacity: cardOpacities[idx],
                 transform: [{ scale: cardScales[idx] }],
               },
-            ]}
-          >
+            ]}>
             <Text style={styles.cardValue}>{s.value}</Text>
             <Text style={styles.cardLabel}>{s.label}</Text>
           </Animated.View>
@@ -110,8 +109,7 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
                 opacity: cardOpacities[idx + 2],
                 transform: [{ scale: cardScales[idx + 2] }],
               },
-            ]}
-          >
+            ]}>
             <Text style={styles.cardValue}>{s.value}</Text>
             <Text style={styles.cardLabel}>{s.label}</Text>
           </Animated.View>
@@ -126,7 +124,7 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
           <Text style={styles.statValue}>86%</Text>
         </View>
         <View style={styles.progressTrack} accessible accessibilityLabel="Survival rate progress">
-          <View style={[styles.progressFill, { width: "86%" }]} />
+          <View style={[styles.progressFill, { width: '86%' }]} />
         </View>
 
         <View style={{ height: 16 }} />
@@ -136,10 +134,9 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
           <Text style={styles.statValue}>10,000 trees</Text>
         </View>
         <View style={styles.progressTrack} accessible accessibilityLabel="Annual target progress">
-          <View style={[styles.progressFill, { width: "54%" }]} />
+          <View style={[styles.progressFill, { width: '54%' }]} />
         </View>
       </View>
-
 
       {/* Recent Activity */}
       <View style={styles.sectionCard}>
@@ -160,28 +157,25 @@ export default function NGODashboard({ navigation }: NGODashboardProps) {
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <ActionButton
           title="Upload Plantation Report"
-          onPress={() => navigation.navigate("UploadReport", { userRole: "NGO" })}
+          onPress={() => navigation.navigate('UploadReport', { userRole: 'NGO' })}
         />
 
         <ActionButton
           title="View Submitted Reports"
-          onPress={() => navigation.navigate("ViewReports", { role: "ngo" })}
+          onPress={() => navigation.navigate('ViewReports', { role: 'ngo' })}
         />
 
-        <ActionButton title="Track Carbon Credits" onPress={() => navigation?.navigate?.("CarbonCredits")} />
+        <ActionButton
+          title="Track Carbon Credits"
+          onPress={() => navigation?.navigate?.('CarbonCredits')}
+        />
       </View>
     </ScrollView>
-  )
+  );
 }
 
-function ActionButton({
-  title,
-  onPress,
-}: {
-  title: string
-  onPress?: () => void
-}) {
-  const scale = useRef(new Animated.Value(1)).current
+function ActionButton({ title, onPress }: { title: string; onPress?: () => void }) {
+  const scale = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => {
     Animated.spring(scale, {
@@ -189,16 +183,16 @@ function ActionButton({
       useNativeDriver: true,
       damping: 20,
       stiffness: 200,
-    }).start()
-  }
+    }).start();
+  };
   const onPressOut = () => {
     Animated.spring(scale, {
       toValue: 1,
       useNativeDriver: true,
       damping: 20,
       stiffness: 200,
-    }).start()
-  }
+    }).start();
+  };
 
   return (
     <Animated.View style={{ transform: [{ scale }], marginVertical: 6 }}>
@@ -208,12 +202,11 @@ function ActionButton({
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         accessibilityRole="button"
-        accessible
-      >
+        accessible>
         <Text style={styles.buttonText}>{title}</Text>
       </Pressable>
     </Animated.View>
-  )
+  );
 }
 
 /**
@@ -226,12 +219,12 @@ function ActionButton({
  * - Gray:    #4B5563
  */
 const COLORS = {
-  primary: "#2E7D32",
-  accent: "#22C55E",
-  bg: "#F2FDF5",
-  white: "#FFFFFF",
-  gray: "#4B5563",
-}
+  primary: '#2E7D32',
+  accent: '#22C55E',
+  bg: '#F2FDF5',
+  white: '#FFFFFF',
+  gray: '#4B5563',
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -243,22 +236,22 @@ const styles = StyleSheet.create({
   // Header
   title: {
     fontSize: 24,
-    fontWeight: "700",
+    fontWeight: '700',
     color: COLORS.primary,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
     color: COLORS.gray,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 16,
   },
 
   // Cards grid
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 12,
   },
   card: {
@@ -267,7 +260,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
     borderRadius: 12,
     padding: 16,
-    alignItems: "center",
+    alignItems: 'center',
     shadowColor: COLORS.gray,
     shadowOpacity: 0.12,
     shadowRadius: 6,
@@ -276,14 +269,14 @@ const styles = StyleSheet.create({
   },
   cardValue: {
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: '700',
     color: COLORS.primary,
     marginBottom: 4,
   },
   cardLabel: {
     fontSize: 14,
     color: COLORS.gray,
-    textAlign: "center",
+    textAlign: 'center',
   },
 
   // Section Card
@@ -300,16 +293,16 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 12,
     color: COLORS.primary,
   },
 
   // Plantation Stats
   statRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
   statLabel: {
@@ -319,27 +312,27 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 14,
     color: COLORS.primary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   progressTrack: {
     height: 8,
     borderRadius: 8,
-    backgroundColor: "#E6F4EA", // light tint of green, visually aligned with palette
-    overflow: "hidden",
+    backgroundColor: '#E6F4EA', // light tint of green, visually aligned with palette
+    overflow: 'hidden',
   },
   progressFill: {
-    height: "100%",
+    height: '100%',
     borderRadius: 8,
     backgroundColor: COLORS.accent,
   },
 
   // Achievements
   badgeWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   badge: {
-    backgroundColor: "#EAF8EE",
+    backgroundColor: '#EAF8EE',
     borderColor: COLORS.accent,
     borderWidth: 1,
     paddingVertical: 6,
@@ -351,18 +344,18 @@ const styles = StyleSheet.create({
   badgeText: {
     color: COLORS.primary,
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 
   // Recent Activity
   activityItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     paddingVertical: 10,
   },
   activityBar: {
     width: 4,
-    height: "100%",
+    height: '100%',
     backgroundColor: COLORS.accent,
     borderRadius: 2,
     marginRight: 12,
@@ -375,7 +368,7 @@ const styles = StyleSheet.create({
   activityTime: {
     fontSize: 12,
     color: COLORS.primary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 
   // Button
@@ -387,8 +380,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: COLORS.white,
-    textAlign: "center",
-    fontWeight: "700",
+    textAlign: 'center',
+    fontWeight: '700',
     fontSize: 14,
   },
-})
+});

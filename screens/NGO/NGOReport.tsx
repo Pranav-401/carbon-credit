@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function NGOReports({ navigation }: any) {
+export default function NGOReports({ route, navigation }: { route: any; navigation: any }) {
+  const { userRole } = route.params || { userRole: 'NGO' };
   return (
     <View style={styles.container}>
       <Text>NGO Report</Text>

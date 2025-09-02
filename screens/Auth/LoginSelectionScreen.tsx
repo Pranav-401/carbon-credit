@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0,0,0,0.4)', // dark overlay for contrast
   },
   imageContainer: {
     justifyContent: 'center',

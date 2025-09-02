@@ -9,12 +9,12 @@ import {
   ImageBackground,
   Image,
   Animated,
-  Dimensions,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { LoginScreenProps } from '../../navigation/AuthNavigator';
-
-const { width } = Dimensions.get('window');
 
 export default function LoginScreen({ route, navigation, setUserRole }: LoginScreenProps) {
   const { role } = route.params;
@@ -49,57 +49,70 @@ export default function LoginScreen({ route, navigation, setUserRole }: LoginScr
 
   return (
     <ImageBackground source={require('../../assets/background.png')} style={styles.background}>
-      <View style={styles.overlay}>
-        <View style={styles.imageContainer}>
-          <Image source={require('../../assets/logo-white.png')} style={styles.logo} />
-          <Text style={styles.title}>{role} Login</Text>
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollContainer}
+          enableOnAndroid={true}
+          extraScrollHeight={40}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          {/* Everything stacked together */}
+          <View style={styles.container}>
+            <Image source={require('../../assets/logo-white.png')} style={styles.logo} />
+            <Text style={styles.title}>{role} Login</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#ccc"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#ccc"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#ccc"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#ccc"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
 
-        <Animated.View style={{ opacity: fadeAnim }}>
-          <TouchableOpacity onPress={handleLogin} style={styles.card} activeOpacity={0.8}>
-            <LinearGradient
-              colors={['#4facfe', '#43e97b']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.button}>
-              <Text style={styles.cardText}>Login</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim, width: '100%' }}>
+              <TouchableOpacity onPress={handleLogin} style={styles.card} activeOpacity={0.8}>
+                <LinearGradient
+                  colors={['#4facfe', '#43e97b']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.button}>
+                  <Text style={styles.cardText}>Login</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen', { role })}>
-          <Text style={styles.registerText}>
-            Don’t have an account? <Text style={styles.registerLink}>Register</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen', { role })}>
+              <Text style={styles.registerText}>
+                Don’t have an account? <Text style={styles.registerLink}>Register</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  background: { flex: 1, resizeMode: 'cover', justifyContent: 'center' },
-  overlay: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: 'rgba(0,0,0,0.4)' },
-  imageContainer: { justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  logo: { width: 180, height: 180, resizeMode: 'contain', marginBottom: 10 },
-  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20, color: '#fff' },
+  background: { flex: 1, resizeMode: 'cover' },
+  scrollContainer: { flexGrow: 1, justifyContent: 'center', padding: 20 },
+
+  container: { alignItems: 'center', justifyContent: 'center' },
+
+  logo: { width: 100, height: 100, resizeMode: 'contain', marginBottom: 10 },
+  title: { fontSize: 22, fontWeight: 'bold', color: '#fff', marginBottom: 20 },
+
   input: {
+    width: '100%',
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 12,
@@ -108,8 +121,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     color: '#fff',
   },
+
   card: {
-    width: '80%',
+    width: '100%',
     marginVertical: 10,
     borderRadius: 30,
     overflow: 'hidden',
@@ -117,6 +131,7 @@ const styles = StyleSheet.create({
   },
   button: { padding: 15, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
   cardText: { color: '#fff', fontSize: 18, textAlign: 'center', fontWeight: '600' },
+
   registerText: { marginTop: 20, textAlign: 'center', color: '#fff' },
   registerLink: { color: '#4facfe', fontWeight: 'bold' },
 });
